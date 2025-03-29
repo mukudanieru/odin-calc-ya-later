@@ -1,7 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap");
+
 * {
     margin: 0;
     border: 0;
     box-sizing: border-box;
+    font-family: "Ubuntu Sans", sans-serif;
 }
 
 body {
@@ -19,26 +22,33 @@ a {
 
 #header {
     /* border: 1px solid gray; */
-    height: 10vh;
+    height: 8vh;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    font-family: "Ubuntu Sans Mono", monospace;
+    font-size: 24px;
+    font-weight: 500;
 }
 
 #footer {
     /* border: 1px solid gray; */
-    height: 5vh;
+    height: 3vh;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    font-size: 14px;
 }
 
 #container {
     /* border: 1px solid gray; */
 
     display: flex;
+    flex-grow: 1;
     align-items: center;
     justify-content: center;
 }
@@ -47,7 +57,7 @@ a {
     border: 1px solid gray;
     border-radius: 4px;
 
-    height: 700px;
-    width: 600px;
+    height: 750px;
+    width: 650px;
     margin: 24px 0;
 }
