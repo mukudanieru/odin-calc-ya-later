@@ -76,10 +76,11 @@ a {
 #history,
 #input {
     width: 617px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.055);
 }
 
 #history {
-    background-color: gray;
+    background-color: #ebebeb;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     height: 345px;
@@ -87,6 +88,9 @@ a {
 
 #input {
     background-color: white;
+    font-weight: 500;
+    font-size: 22px;
+    padding: 10px 15px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     height: 65px;
@@ -135,18 +139,59 @@ a {
 
 /* Calculator Buttons */
 .calc-btn {
+    background-color: #e6e6e6;
     font-size: 17px;
     border-radius: 6px;
     height: 40px;
     width: 120px;
 }
 
+.calc-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.calc-btn:active {
+    background-color: #d6d6d6;
+}
+
 /* Button Modifiers */
 .num {
+    background-color: #d2d2d2;
     font-weight: 600;
 }
 
+.num:hover {
+    background-color: #cccccc;
+}
+
+.num:active {
+    background-color: #c2c2c2;
+}
+
 #btn-equal {
+    background-color: #ff810a;
+    color: #f7f5fb;
     height: 100%;
     align-self: stretch;
+}
+
+#btn-equal:hover {
+    filter: brightness(1.1);
+}
+
+#btn-equal:active {
+    background-color: #e06900;
+}
+
+.delete {
+    background-color: #6d2e46;
+    color: white;
+}
+
+.delete:hover {
+    background-color: #652a41;
+}
+
+.delete:active {
+    background-color: #562437;
 }
