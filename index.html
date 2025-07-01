@@ -18,24 +18,106 @@
         <div id="button-container">
           <div class="btn-rows">
             <div class="btn-row">
-              <button class="calc-btn delete" id="btn-c" data-value="clear">C</button>
-              <button class="calc-btn delete" id="btn-ac" data-value="all-clear">AC</button>
+              <button
+                class="calc-btn delete"
+                id="btn-c"
+                data-type="clear"
+                data-value="c"
+              >
+                C
+              </button>
+              <button
+                class="calc-btn delete"
+                id="btn-ac"
+                data-type="all-clear"
+                data-value="ac"
+              >
+                AC
+              </button>
             </div>
 
             <div class="btn-row">
-              <button class="calc-btn num" id="btn-seven" data-type="number" data-value="7">7</button>
-              <button class="calc-btn num" id="btn-eight" data-type="number" data-value="8">8</button>
-              <button class="calc-btn num" id="btn-nine" data-type="number" data-value="9">9</button>
-              <button class="calc-btn" id="btn-division" data-type="operator" data-value="/">&divide;</button>
-              <button class="calc-btn" id="btn-square-root" data-value="sqrt">&#8730;</button>
+              <button
+                class="calc-btn num"
+                id="btn-seven"
+                data-type="digit"
+                data-value="7"
+              >
+                7
+              </button>
+              <button
+                class="calc-btn num"
+                id="btn-eight"
+                data-type="digit"
+                data-value="8"
+              >
+                8
+              </button>
+              <button
+                class="calc-btn num"
+                id="btn-nine"
+                data-type="digit"
+                data-value="9"
+              >
+                9
+              </button>
+              <button
+                class="calc-btn"
+                id="btn-division"
+                data-type="operator"
+                data-value="divide"
+              >
+                &divide;
+              </button>
+              <button
+                class="calc-btn"
+                id="btn-square-root"
+                data-type="function"
+                data-value="sqrt"
+              >
+                &#8730;
+              </button>
             </div>
 
             <div class="btn-row">
-              <button class="calc-btn num" id="btn-four" data-type="number" data-value="4">4</button>
-              <button class="calc-btn num" id="btn-five" data-type="number" data-value="5">5</button>
-              <button class="calc-btn num" id="btn-six" data-type="number" data-value="6">6</button>
-              <button class="calc-btn" id="btn-multiply" data-type="operator" data-value="*">&times;</button>
-              <button class="calc-btn" id="btn-squared" data-value="square">
+              <button
+                class="calc-btn num"
+                id="btn-four"
+                data-type="digit"
+                data-value="4"
+              >
+                4
+              </button>
+              <button
+                class="calc-btn num"
+                id="btn-five"
+                data-type="digit"
+                data-value="5"
+              >
+                5
+              </button>
+              <button
+                class="calc-btn num"
+                id="btn-six"
+                data-type="digit"
+                data-value="6"
+              >
+                6
+              </button>
+              <button
+                class="calc-btn"
+                id="btn-multiply"
+                data-type="operator"
+                data-value="multiply"
+              >
+                &times;
+              </button>
+              <button
+                class="calc-btn"
+                id="btn-squared"
+                data-type="function"
+                data-value="square"
+              >
                 <i>x&#178;</i>
               </button>
             </div>
@@ -43,20 +125,83 @@
             <div id="bottom-row">
               <div id="bottom-two">
                 <div class="btn-row">
-                  <button class="calc-btn num" id="btn-one" data-type="number" data-value="1">1</button>
-                  <button class="calc-btn num" id="btn-two" data-type="number" data-value="2">2</button>
-                  <button class="calc-btn num" id="btn-three" data-type="number" data-value="3">3</button>
-                  <button class="calc-btn" id="btn-sub" data-type="operator" data-value="-">&minus;</button>
+                  <button
+                    class="calc-btn num"
+                    id="btn-one"
+                    data-type="digit"
+                    data-value="1"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="calc-btn num"
+                    id="btn-two"
+                    data-type="digit"
+                    data-value="2"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="calc-btn num"
+                    id="btn-three"
+                    data-type="digit"
+                    data-value="3"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="calc-btn"
+                    id="btn-sub"
+                    data-type="operator"
+                    data-value="subtraction"
+                  >
+                    &minus;
+                  </button>
                 </div>
 
                 <div class="btn-row">
-                  <button class="calc-btn num" id="btn-zero" data-type="number" data-value="0">0</button>
-                  <button class="calc-btn" id="btn-decimal" data-value=".">.</button>
-                  <button class="calc-btn" id="btn-percent" data-value="&percnt;">&percnt;</button>
-                  <button class="calc-btn" id="btn-add" data-type="operator" data-value="+">&plus;</button>
+                  <button
+                    class="calc-btn num"
+                    id="btn-zero"
+                    data-type="digit"
+                    data-value="0"
+                  >
+                    0
+                  </button>
+                  <button
+                    class="calc-btn"
+                    id="btn-decimal"
+                    data-type="decimal"
+                    data-value="."
+                  >
+                    .
+                  </button>
+                  <button
+                    class="calc-btn"
+                    id="btn-percent"
+                    data-type="percent"
+                    data-value="&percnt;"
+                  >
+                    &percnt;
+                  </button>
+                  <button
+                    class="calc-btn"
+                    id="btn-add"
+                    data-type="operator"
+                    data-value="addition"
+                  >
+                    &plus;
+                  </button>
                 </div>
               </div>
-              <button class="calc-btn" id="btn-equal" data-type="control" data-value="=">&equals;</button>
+              <button
+                class="calc-btn"
+                id="btn-equal"
+                data-type="equals"
+                data-value="="
+              >
+                &equals;
+              </button>
             </div>
           </div>
         </div>

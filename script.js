@@ -1,21 +1,21 @@
 function add(x, y) {
-    return x + y;
+  return x + y;
 }
 
 function subtract(x, y) {
-    return x - y;
+  return x - y;
 }
 
 function multiply(x, y) {
-    return x * y;
+  return x * y;
 }
 
 function divide(x, y) {
-    return x / y;
+  return x / y;
 }
 
 function operate(operator, x, y) {
-    return operator(x, y);
+  return operator(x, y);
 }
 
 let x;
@@ -24,54 +24,77 @@ let y;
 
 const input = document.querySelector("#input");
 
+function handleDigit(value) {
+  return;
+}
+
+function handleOperator(value) {
+  return;
+}
+
+function handleDecimal(value) {
+  return;
+}
+
+function calculateResult() {
+  return;
+}
+
+function clearLast() {
+  return;
+}
+
+function clearAll() {
+  return;
+}
+
+function handlePercent() {
+  return;
+}
+
+function handleFunction(value) {
+  return;
+}
+
 // MAIN
 document.addEventListener("DOMContentLoaded", () => {
-    const buttonContainer = document.querySelector("#button-container");
+  const buttonContainer = document.querySelector("#button-container");
 
-    x = "";
-    y = "";
+  x = "";
+  y = "";
 
-    buttonContainer.addEventListener("click", (event) => {
-        let target = event.target.closest("button");
+  buttonContainer.addEventListener("click", (event) => {
+    let target = event.target.closest("button");
+    const { type, value } = target.dataset;
 
-        if (target) {
-            if (target.dataset.type === "number") {
-                if (!operation && y.length === 0) {
-                    x += target.textContent;
-                    input.textContent = x;
-                } else if (x && operation) {
-                    y += target.textContent;
-                    input.textContent = x + operation + y;
-                }
-            } else if (target.dataset.type === "operator") {
-                if (x.length > 0) {
-                    operation = target.dataset.value;
-                }
-                input.textContent = x + operation;
-            } else if (target.dataset.type === "control") {
-                if (target.dataset.value === "=" && x.length > 0 && operation && y.length > 0) {
-                    let result;
-                    x = parseInt(x);
-                    y = parseInt(y);
+    console.log(type);
+    console.log(value);
 
-                    if (operation === "+") {
-                        result = operate(add, x, y);
-                    } else if (operate === "-") {
-                        result = operate(subtract, x, y);
-                    } else if (operation === "*") {
-                        result = operate(multiply, x, y);
-                    } else if (operation === "/") {
-                        result = operate(subtract, x, y);
-                    }
-
-                    input.textContent = result;
-                    x = "";
-                    y = "";         
-                }
-            }
-            console.log(`${x} ${operation} ${y}`)
-            console.log(target);
-        }
-
-    });
+    switch (type) {
+      case "digit":
+        handleDigit(value);
+        break;
+      case "operator":
+        handleOperator(value);
+        break;
+      case "decimal":
+        handleDecimal(value);
+        break;
+      case "equals":
+        calculateResult();
+        break;
+      case "clear":
+        clearLast();
+        break;
+      case "all-clear":
+        clearAll();
+        break;
+      case "percent":
+        handlePercent();
+        break;
+      case "function":
+        handleFunction();
+        break;
+    }
+  });
 });
