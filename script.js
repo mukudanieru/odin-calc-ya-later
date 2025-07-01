@@ -20,16 +20,40 @@ function operate(operator, x, y) {
 
 let x;
 let operation;
+let symbol;
 let y;
 
 const input = document.querySelector("#input");
 
 function handleDigit(value) {
-  return;
+  if (typeof operation === "undefined") {
+    if (typeof x === "undefined") {
+      x = value;
+    } else {
+      x += value;
+    }
+
+    input.textContent = x;
+  }
+
+  if (typeof operation !== "undefined") {
+    if (typeof y === "undefined") {
+      y = value;
+    } else {
+      y += value;
+    }
+
+    input.textContent = x + symbol + y;
+  }
 }
 
-function handleOperator(value) {
-  return;
+function handleOperator(value, operator) {
+  if (typeof x !== "undefined") {
+    operation = value;
+    symbol = operator;
+    input.textContent = x + symbol;
+    // console.log(operation);
+  }
 }
 
 function handleDecimal(value) {
@@ -37,7 +61,30 @@ function handleDecimal(value) {
 }
 
 function calculateResult() {
-  return;
+  let result;
+  x = parseInt(x);
+  y = parseInt(y);
+
+  console.log(operation);
+
+  switch (operation) {
+    case "addition":
+      result = operate(add, x, y);
+      break;
+    case "subtract":
+      result = operate(subtract, x, y);
+      break;
+    case "multiply":
+      result = operate(multiply, x, y);
+      break;
+    case "divide":
+      result = operate(divide, x, y);
+      break;
+  }
+
+  input.textContent = result;
+  x = "";
+  y = "";
 }
 
 function clearLast() {
@@ -60,22 +107,24 @@ function handleFunction(value) {
 document.addEventListener("DOMContentLoaded", () => {
   const buttonContainer = document.querySelector("#button-container");
 
-  x = "";
-  y = "";
-
   buttonContainer.addEventListener("click", (event) => {
     let target = event.target.closest("button");
+
+    if (target === null) {
+      return;
+    }
+
     const { type, value } = target.dataset;
 
-    console.log(type);
-    console.log(value);
+    // console.log(type);
+    // console.log(value);
 
     switch (type) {
       case "digit":
         handleDigit(value);
         break;
       case "operator":
-        handleOperator(value);
+        handleOperator(value, target.textContent);
         break;
       case "decimal":
         handleDecimal(value);
