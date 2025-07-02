@@ -61,30 +61,32 @@ function handleDecimal(value) {
 }
 
 function calculateResult() {
-  let result;
-  x = parseInt(x);
-  y = parseInt(y);
+  if (typeof x !== "undefined" && typeof y !== "undefined") {
+    let result;
+    x = parseInt(x);
+    y = parseInt(y);
 
-  console.log(operation);
+    console.log(operation);
 
-  switch (operation) {
-    case "addition":
-      result = operate(add, x, y);
-      break;
-    case "subtract":
-      result = operate(subtract, x, y);
-      break;
-    case "multiply":
-      result = operate(multiply, x, y);
-      break;
-    case "divide":
-      result = operate(divide, x, y);
-      break;
+    switch (operation) {
+      case "addition":
+        result = operate(add, x, y);
+        break;
+      case "subtract":
+        result = operate(subtract, x, y);
+        break;
+      case "multiply":
+        result = operate(multiply, x, y);
+        break;
+      case "divide":
+        result = operate(divide, x, y);
+        break;
+    }
+
+    input.textContent = result;
+    x = "";
+    y = "";
   }
-
-  input.textContent = result;
-  x = "";
-  y = "";
 }
 
 function clearLast() {
@@ -92,11 +94,21 @@ function clearLast() {
 }
 
 function clearAll() {
-  return;
+  x = undefined;
+  operation = undefined;
+  y = undefined;
+
+  input.textContent = "";
 }
 
 function handlePercent() {
-  return;
+  if (typeof x !== "undefined") {
+    if (typeof y === "undefined") {
+      x = parseInt(x);
+      x = x / 100;
+      input.textContent = x;
+    }
+  }
 }
 
 function handleFunction(value) {
