@@ -19,12 +19,20 @@ function operate(operator, x, y) {
   return operator(x, y);
 }
 
-let symbol = "";
 let firstOperand = null;
+let symbol = "";
 let operation = null;
 let secondOperand = null;
 
 const input = document.querySelector("#input");
+
+function debug() {
+  console.log("First Operand: " + firstOperand);
+  console.log("Symbol: " + symbol);
+  console.log("Operation: " + operation);
+  console.log("Second Operand: " + secondOperand);
+  console.log(" ");
+}
 
 function handleDigit(digit) {
   if (operation === null) {
@@ -50,12 +58,7 @@ function handleDigit(digit) {
 
 function handleOperator(value, operator) {
   if (firstOperand !== null && operation !== null && secondOperand !== null) {
-    console.log(operation);
-    let result = calculate(parseFloat(firstOperand), parseFloat(secondOperand));
-
-    input.textContent = result;
-    firstOperand = String(result);
-    secondOperand = null;
+    evaluateExpression();
   }
 
   if (firstOperand !== null) {
@@ -71,13 +74,39 @@ function handleDecimal(value) {
 
 function calculateResult() {
   if (firstOperand !== null && secondOperand !== null) {
-    console.log(operation);
-    let result = calculate(parseFloat(firstOperand), parseFloat(secondOperand));
-
-    input.textContent = result;
-    firstOperand = String(result);
-    secondOperand = null;
+    evaluateExpression();
   }
+}
+
+function evaluateExpression() {
+  /**
+   * Evaluates the current expression using firstOperand, operation, and secondOperand.
+   */
+  const num1 = parseFloat(firstOperand);
+  const num2 = parseFloat(secondOperand);
+
+  if (operation === "divide" && num2 === 0) {
+    console.log("TEST");
+    input.textContent = "Error: Division by 0";
+
+    firstOperand = null;
+    secondOperand = null;
+    operation = null;
+    symbol = "";
+    return;
+  }
+
+  let rawResult = calculate(num1, num2);
+
+  let result = Number.isInteger(rawResult)
+    ? String(rawResult)
+    : rawResult.toFixed(4);
+
+  input.textContent = result;
+  firstOperand = result;
+  symbol = "";
+  operation = null;
+  secondOperand = null;
 }
 
 function calculate(x, y) {
@@ -168,5 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         handleFunction();
         break;
     }
+
+    debug();
   });
 });
