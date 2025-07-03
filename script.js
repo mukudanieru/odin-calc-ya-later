@@ -3,6 +3,7 @@ function add(x, y) {
 }
 
 function subtract(x, y) {
+  console.log(x - y);
   return x - y;
 }
 
@@ -18,41 +19,49 @@ function operate(operator, x, y) {
   return operator(x, y);
 }
 
-let x;
-let operation;
-let symbol;
-let y;
+let symbol = "";
+let firstOperand = null;
+let operation = null;
+let secondOperand = null;
 
 const input = document.querySelector("#input");
 
-function handleDigit(value) {
-  if (typeof operation === "undefined") {
-    if (typeof x === "undefined") {
-      x = value;
+function handleDigit(digit) {
+  if (operation === null) {
+    if (firstOperand === null) {
+      firstOperand = digit;
     } else {
-      x += value;
+      firstOperand += digit;
     }
 
-    input.textContent = x;
+    input.textContent = firstOperand;
   }
 
-  if (typeof operation !== "undefined") {
-    if (typeof y === "undefined") {
-      y = value;
+  if (operation !== null) {
+    if (secondOperand === null) {
+      secondOperand = digit;
     } else {
-      y += value;
+      secondOperand += digit;
     }
 
-    input.textContent = x + symbol + y;
+    input.textContent = firstOperand + symbol + secondOperand;
   }
 }
 
 function handleOperator(value, operator) {
-  if (typeof x !== "undefined") {
+  if (firstOperand !== null && operation !== null && secondOperand !== null) {
+    console.log(operation);
+    let result = calculate(parseFloat(firstOperand), parseFloat(secondOperand));
+
+    input.textContent = result;
+    firstOperand = String(result);
+    secondOperand = null;
+  }
+
+  if (firstOperand !== null) {
     operation = value;
     symbol = operator;
-    input.textContent = x + symbol;
-    // console.log(operation);
+    input.textContent = firstOperand + symbol;
   }
 }
 
@@ -61,32 +70,35 @@ function handleDecimal(value) {
 }
 
 function calculateResult() {
-  if (typeof x !== "undefined" && typeof y !== "undefined") {
-    let result;
-    x = parseInt(x);
-    y = parseInt(y);
-
+  if (firstOperand !== null && secondOperand !== null) {
     console.log(operation);
-
-    switch (operation) {
-      case "addition":
-        result = operate(add, x, y);
-        break;
-      case "subtract":
-        result = operate(subtract, x, y);
-        break;
-      case "multiply":
-        result = operate(multiply, x, y);
-        break;
-      case "divide":
-        result = operate(divide, x, y);
-        break;
-    }
+    let result = calculate(parseFloat(firstOperand), parseFloat(secondOperand));
 
     input.textContent = result;
-    x = "";
-    y = "";
+    firstOperand = String(result);
+    secondOperand = null;
   }
+}
+
+function calculate(x, y) {
+  let result;
+
+  switch (operation) {
+    case "addition":
+      result = operate(add, x, y);
+      break;
+    case "subtraction":
+      result = operate(subtract, x, y);
+      break;
+    case "multiply":
+      result = operate(multiply, x, y);
+      break;
+    case "divide":
+      result = operate(divide, x, y);
+      break;
+  }
+
+  return result;
 }
 
 function clearLast() {
@@ -94,21 +106,20 @@ function clearLast() {
 }
 
 function clearAll() {
-  x = undefined;
-  operation = undefined;
-  y = undefined;
-
+  firstOperand = null;
+  operation = null;
+  secondOperand = null;
   input.textContent = "";
 }
 
 function handlePercent() {
-  if (typeof x !== "undefined") {
-    if (typeof y === "undefined") {
-      x = parseInt(x);
-      x = x / 100;
-      input.textContent = x;
-    }
-  }
+  // if (typeof x !== "undefined") {
+  //   if (typeof y === "undefined") {
+  //     x = parseInt(x);
+  //     x = x / 100;
+  //     input.textContent = x;
+  //   }
+  // }
 }
 
 function handleFunction(value) {
