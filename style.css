@@ -74,7 +74,7 @@ a {
 
 /* History & Input Area */
 #history,
-#input {
+#input-container {
   width: 617px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.055);
 }
@@ -86,17 +86,34 @@ a {
   height: 345px;
 }
 
-#input {
+#input-container {
   background-color: white;
-  font-weight: 500;
-  font-size: 22px;
-  padding: 10px 15px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   height: 65px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#input {
+  /* border: 1px solid blue; */
+  height: 40px;
+  font-weight: 500;
+  font-size: 22px;
+  padding: 10px 10px;
+
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
+}
+
+#warning {
+  /* border: 1px solid red; */
+  font-weight: 300;
+  font-size: 13.8px;
+  height: 25px;
+  padding: 3px 10px;
 }
 
 /* Button Container */
@@ -147,6 +164,7 @@ a {
   border-radius: 6px;
   height: 40px;
   width: 120px;
+  transition: all 0.3s ease;
 }
 
 .calc-btn:hover {

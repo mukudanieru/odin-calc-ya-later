@@ -24,7 +24,8 @@ let symbol = "";
 let operation = null;
 let secondOperand = null;
 
-const input = document.querySelector("#input");
+const inputContainer = document.querySelector("#input-container");
+const [input, warning] = inputContainer.querySelectorAll("div");
 
 function debug() {
   console.log("First Operand: " + firstOperand);
@@ -87,7 +88,7 @@ function evaluateExpression() {
 
   if (operation === "divide" && num2 === 0) {
     console.log("TEST");
-    input.textContent = "Error: Division by 0";
+    warning.textContent = "Error: Division by 0";
 
     firstOperand = null;
     secondOperand = null;
@@ -139,6 +140,7 @@ function clearAll() {
   operation = null;
   secondOperand = null;
   input.textContent = "";
+  warning.textContent = "";
 }
 
 function handlePercent() {
@@ -167,9 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const { type, value } = target.dataset;
-
-    // console.log(type);
-    // console.log(value);
 
     switch (type) {
       case "digit":
