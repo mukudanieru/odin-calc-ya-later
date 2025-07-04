@@ -34,6 +34,7 @@ function debug() {
   console.log("Operation: " + operation);
   console.log("Second Operand: " + secondOperand);
   console.log("Result: " + isResultDisplayed);
+  console.log("INPUT:" + input.textContent);
   console.log(" ");
 }
 
@@ -93,6 +94,7 @@ function evaluateExpression() {
   /**
    * Evaluates the current expression using firstOperand, operation, and secondOperand.
    */
+  const DECIMAL_PLACES = 4;
   const num1 = parseFloat(firstOperand);
   const num2 = parseFloat(secondOperand);
 
@@ -111,7 +113,7 @@ function evaluateExpression() {
 
   let result = Number.isInteger(rawResult)
     ? String(rawResult)
-    : rawResult.toFixed(4);
+    : rawResult.toFixed(DECIMAL_PLACES);
 
   input.textContent = result;
   firstOperand = result;
@@ -142,10 +144,45 @@ function calculate(x, y) {
 }
 
 function clearLast() {
-  return;
+  const START_INDEX = 0;
+  const LAST_CHAR = -1;
+
+  if (isResultDisplayed) {
+    firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
+    input.textContent = firstOperand;
+
+    if (firstOperand === "") {
+      firstOperand = null;
+    }
+
+    isResultDisplayed = false;
+  } else if (secondOperand !== null) {
+    secondOperand = secondOperand.slice(START_INDEX, LAST_CHAR);
+    input.textContent = firstOperand + symbol + secondOperand;
+
+    if (secondOperand === "") {
+      secondOperand = null;
+    }
+  } else if (operation !== null && secondOperand === null) {
+    symbol = "";
+    input.textContent = firstOperand;
+    operation = null;
+  } else if (
+    firstOperand !== null &&
+    operation === null &&
+    secondOperand === null
+  ) {
+    firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
+    input.textContent = firstOperand;
+
+    if (firstOperand === "") {
+      firstOperand = null;
+    }
+  }
 }
 
 function clearAll() {
+  isResultDisplayed = false;
   firstOperand = null;
   operation = null;
   secondOperand = null;
