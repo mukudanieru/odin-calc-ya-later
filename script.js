@@ -24,6 +24,7 @@ let symbol = "";
 let operation = null;
 let secondOperand = null;
 let isResultDisplayed = false;
+let isThereAnError = false;
 
 const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
@@ -86,7 +87,10 @@ function handleDecimal(value) {
 function calculateResult() {
   if (firstOperand !== null && secondOperand !== null) {
     evaluateExpression();
-    isResultDisplayed = true;
+
+    if (!isThereAnError) {
+      isResultDisplayed = true;
+    }
   }
 }
 
@@ -101,11 +105,7 @@ function evaluateExpression() {
   if (operation === "divide" && num2 === 0) {
     console.log("TEST");
     warning.textContent = "Error: Division by 0";
-
-    firstOperand = null;
-    secondOperand = null;
-    operation = null;
-    symbol = "";
+    isThereAnError = true;
     return;
   }
 
@@ -146,6 +146,8 @@ function calculate(x, y) {
 function clearLast() {
   const START_INDEX = 0;
   const LAST_CHAR = -1;
+
+  warning.textContent = "";
 
   if (isResultDisplayed) {
     firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
