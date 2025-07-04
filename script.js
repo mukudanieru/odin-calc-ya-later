@@ -23,6 +23,7 @@ let firstOperand = null;
 let symbol = "";
 let operation = null;
 let secondOperand = null;
+let isResultDisplayed = false;
 
 const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
@@ -32,10 +33,16 @@ function debug() {
   console.log("Symbol: " + symbol);
   console.log("Operation: " + operation);
   console.log("Second Operand: " + secondOperand);
+  console.log("Result: " + isResultDisplayed);
   console.log(" ");
 }
 
 function handleDigit(digit) {
+  if (isResultDisplayed) {
+    firstOperand = null;
+    isResultDisplayed = false;
+  }
+
   if (operation === null) {
     if (firstOperand === null) {
       firstOperand = digit;
@@ -58,6 +65,8 @@ function handleDigit(digit) {
 }
 
 function handleOperator(value, operator) {
+  isResultDisplayed = false;
+
   if (firstOperand !== null && operation !== null && secondOperand !== null) {
     evaluateExpression();
   }
@@ -76,6 +85,7 @@ function handleDecimal(value) {
 function calculateResult() {
   if (firstOperand !== null && secondOperand !== null) {
     evaluateExpression();
+    isResultDisplayed = true;
   }
 }
 
