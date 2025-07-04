@@ -19,12 +19,19 @@ function operate(operator, x, y) {
   return operator(x, y);
 }
 
+const errorMessages = {
+  DIVISION_ERROR: "Error: Division by zero.",
+  DECIMAL_ERROR: "Error: Only one decimal point allowed.",
+};
+
 let firstOperand = null;
 let symbol = "";
 let operation = null;
 let secondOperand = null;
 let isResultDisplayed = false;
+
 let isThereAnError = false;
+let errorType = null;
 
 const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
@@ -35,14 +42,32 @@ function debug() {
   console.log("Operation: " + operation);
   console.log("Second Operand: " + secondOperand);
   console.log("Result: " + isResultDisplayed);
+  console.log("isThereAnError: " + isThereAnError);
+  console.log("errorType: " + errorType);
   console.log("INPUT:" + input.textContent);
   console.log(" ");
+}
+
+function setError(type) {
+  isThereAnError = true;
+  errorType = type;
+  warning.textContent = errorMessages[errorType];
+}
+
+function clearError() {
+  isThereAnError = false;
+  errorType = null;
+  warning.textContent = "";
 }
 
 function handleDigit(digit) {
   if (isResultDisplayed) {
     firstOperand = null;
     isResultDisplayed = false;
+  }
+
+  if (isThereAnError && errorType == "DECIMAL_ERROR") {
+    clearError();
   }
 
   if (operation === null) {
@@ -67,7 +92,13 @@ function handleDigit(digit) {
 }
 
 function handleOperator(value, operator) {
-  isResultDisplayed = false;
+  if (isResultDisplayed) {
+    isResultDisplayed = false;
+  }
+
+  if (isThereAnError && errorType == "DECIMAL_ERROR") {
+    clearError();
+  }
 
   if (firstOperand !== null && operation !== null && secondOperand !== null) {
     evaluateExpression();
@@ -81,7 +112,40 @@ function handleOperator(value, operator) {
 }
 
 function handleDecimal(value) {
-  return;
+  if (isResultDisplayed) {
+    firstOperand = null;
+    isResultDisplayed = false;
+  }
+
+  if (operation == null) {
+    if (firstOperand === null) {
+      firstOperand = value;
+    } else {
+      if (firstOperand.includes(value)) {
+        setError("DECIMAL_ERROR");
+        return;
+      }
+
+      firstOperand += value;
+    }
+
+    input.textContent = firstOperand;
+  }
+
+  if (operation !== null) {
+    if (secondOperand === null) {
+      secondOperand = value;
+    } else {
+      if (secondOperand.includes(value)) {
+        setError("DECIMAL_ERROR");
+        return;
+      }
+
+      secondOperand += value;
+    }
+
+    input.textContent = firstOperand + symbol + secondOperand;
+  }
 }
 
 function calculateResult() {
@@ -103,9 +167,7 @@ function evaluateExpression() {
   const num2 = parseFloat(secondOperand);
 
   if (operation === "divide" && num2 === 0) {
-    console.log("TEST");
-    warning.textContent = "Error: Division by 0";
-    isThereAnError = true;
+    setError("DIVISION_ERROR");
     return;
   }
 
@@ -147,7 +209,9 @@ function clearLast() {
   const START_INDEX = 0;
   const LAST_CHAR = -1;
 
-  warning.textContent = "";
+  if (isThereAnError) {
+    clearError();
+  }
 
   if (isResultDisplayed) {
     firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
@@ -189,7 +253,7 @@ function clearAll() {
   operation = null;
   secondOperand = null;
   input.textContent = "";
-  warning.textContent = "";
+  clearError();
 }
 
 function handlePercent() {
