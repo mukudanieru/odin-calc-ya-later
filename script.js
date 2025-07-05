@@ -26,6 +26,10 @@ const errorMessages = {
   PERCENT_MULTIPLE_ERROR: "Error: Multiple percentage signs not allowed.",
   PERCENT_FIRST_OPERAND_ERROR:
     "Error: Percentage is only allowed for the first operand.",
+  SQUARED_ERROR: "Error: Squared is only allowed after a number.",
+  SQUARED_MULTIPLE_ERROR: "Error: Multiple squared symbols not allowed.",
+  SQUARED_FIRST_OPERAND_ERROR:
+    "Error: Squared is only allowed for the first operand.",
 };
 
 let firstOperand = null;
@@ -33,6 +37,8 @@ let symbol = "";
 let operation = null;
 let secondOperand = null;
 let isResultDisplayed = false;
+let hasSqrtPending = false;
+let hasSquaredPending = false;
 let hasPercentagePending = false;
 
 let isThereAnError = false;
@@ -49,9 +55,25 @@ function debug() {
   console.log("Result: ", isResultDisplayed);
   console.log("isThereAnError: ", isThereAnError);
   console.log("errorType: ", errorType);
+  console.log("hasSqrtPending: ", hasSqrtPending);
+  console.log("hasSquaredPending: ", hasSquaredPending);
   console.log("hasPercentagePending: ", hasPercentagePending);
   console.log("INPUT:", input.textContent);
   console.log(" ");
+}
+
+function processPercentage() {
+  firstOperand = String(parseFloat(firstOperand) / 100);
+  input.textContent = firstOperand;
+  hasPercentagePending = false;
+}
+
+function processSqrt() {}
+
+function processSquared() {
+  firstOperand = String(Math.pow(parseFloat(firstOperand), 2));
+  input.textContent = firstOperand;
+  hasSquaredPending = false;
 }
 
 function setError(type) {
@@ -74,6 +96,12 @@ function handleDigit(digit) {
 
   if (isThereAnError) {
     clearError();
+  }
+
+  if (hasSquaredPending) {
+    // Can't add digit after squared sign.
+    setError("SQUARED_ERROR");
+    return;
   }
 
   if (hasPercentagePending) {
@@ -112,10 +140,12 @@ function handleOperator(value, operator) {
     clearError();
   }
 
+  if (firstOperand !== null && hasSquaredPending) {
+    processSquared();
+  }
+
   if (firstOperand !== null && hasPercentagePending) {
-    firstOperand = String(parseFloat(firstOperand) / 100);
-    input.textContent = firstOperand;
-    hasPercentagePending = false;
+    processPercentage();
   }
 
   if (firstOperand !== null && operation !== null && secondOperand !== null) {
@@ -133,6 +163,12 @@ function handleDecimal(value) {
   if (isResultDisplayed) {
     firstOperand = null;
     isResultDisplayed = false;
+  }
+
+  if (hasSquaredPending) {
+    // Can't add digit after squared sign.
+    setError("SQUARED_ERROR");
+    return;
   }
 
   if (hasPercentagePending) {
@@ -177,10 +213,12 @@ function calculateResult() {
     clearError();
   }
 
+  if (firstOperand !== null && hasSquaredPending) {
+    processSquared();
+  }
+
   if (firstOperand !== null && hasPercentagePending) {
-    firstOperand = String(parseFloat(firstOperand) / 100);
-    input.textContent = firstOperand;
-    hasPercentagePending = false;
+    processPercentage();
   }
 
   if (firstOperand !== null && secondOperand !== null) {
@@ -273,6 +311,10 @@ function clearLast() {
     operation === null &&
     secondOperand === null
   ) {
+    if (hasSquaredPending) {
+      hasSquaredPending = false;
+    }
+
     if (hasPercentagePending) {
       hasPercentagePending = false;
     }
@@ -287,10 +329,13 @@ function clearLast() {
 }
 
 function clearAll() {
-  isResultDisplayed = false;
   firstOperand = null;
   operation = null;
   secondOperand = null;
+  isResultDisplayed = false;
+  hasSqrtPending = false;
+  hasSquaredPending = false;
+  hasPercentagePending = false;
   input.textContent = "";
   clearError();
 }
@@ -318,8 +363,31 @@ function handlePercent() {
   }
 }
 
-function handleFunction(value) {
-  return;
+function handleSqrt(value) {
+  console.log(value);
+}
+
+function handleSquared(value) {
+  if (operation === null) {
+    if (firstOperand !== null) {
+      if (firstOperand.includes(value) && hasSquaredPending) {
+        setError("SQUARED_MULTIPLE_ERROR");
+        return;
+      }
+
+      hasSquaredPending = true;
+      firstOperand += value;
+      input.textContent = firstOperand;
+    } else {
+      setError("SQUARED_ERROR");
+      return;
+    }
+  }
+
+  if (operation !== null) {
+    setError("SQUARED_FIRST_OPERAND_ERROR");
+    return;
+  }
 }
 
 // MAIN
@@ -357,8 +425,11 @@ document.addEventListener("DOMContentLoaded", () => {
       case "percent":
         handlePercent();
         break;
-      case "function":
-        handleFunction();
+      case "sqrt":
+        handleSqrt(value);
+        break;
+      case "squared":
+        handleSquared(value);
         break;
     }
 
