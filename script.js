@@ -22,6 +22,10 @@ function operate(operator, x, y) {
 const errorMessages = {
   DIVISION_ERROR: "Error: Division by zero.",
   DECIMAL_ERROR: "Error: Only one decimal point allowed.",
+  PERCENT_ERROR: "Error: Percentage is only allowed after a number.",
+  PERCENT_MULTIPLE_ERROR: "Error: Multiple percentage signs not allowed.",
+  PERCENT_FIRST_OPERAND_ERROR:
+    "Error: Percentage is only allowed for the first operand.",
 };
 
 let firstOperand = null;
@@ -29,6 +33,7 @@ let symbol = "";
 let operation = null;
 let secondOperand = null;
 let isResultDisplayed = false;
+let hasPercentagePending = false;
 
 let isThereAnError = false;
 let errorType = null;
@@ -37,14 +42,15 @@ const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
 
 function debug() {
-  console.log("First Operand: " + firstOperand);
-  console.log("Symbol: " + symbol);
-  console.log("Operation: " + operation);
-  console.log("Second Operand: " + secondOperand);
-  console.log("Result: " + isResultDisplayed);
-  console.log("isThereAnError: " + isThereAnError);
-  console.log("errorType: " + errorType);
-  console.log("INPUT:" + input.textContent);
+  console.log("First Operand: ", firstOperand);
+  console.log("Symbol: ", symbol);
+  console.log("Operation: ", operation);
+  console.log("Second Operand: ", secondOperand);
+  console.log("Result: ", isResultDisplayed);
+  console.log("isThereAnError: ", isThereAnError);
+  console.log("errorType: ", errorType);
+  console.log("hasPercentagePending: ", hasPercentagePending);
+  console.log("INPUT:", input.textContent);
   console.log(" ");
 }
 
@@ -66,8 +72,14 @@ function handleDigit(digit) {
     isResultDisplayed = false;
   }
 
-  if (isThereAnError && errorType == "DECIMAL_ERROR") {
+  if (isThereAnError) {
     clearError();
+  }
+
+  if (hasPercentagePending) {
+    // Can't add digit after percentage.
+    setError("PERCENT_ERROR");
+    return;
   }
 
   if (operation === null) {
@@ -96,8 +108,14 @@ function handleOperator(value, operator) {
     isResultDisplayed = false;
   }
 
-  if (isThereAnError && errorType == "DECIMAL_ERROR") {
+  if (isThereAnError) {
     clearError();
+  }
+
+  if (firstOperand !== null && hasPercentagePending) {
+    firstOperand = String(parseFloat(firstOperand) / 100);
+    input.textContent = firstOperand;
+    hasPercentagePending = false;
   }
 
   if (firstOperand !== null && operation !== null && secondOperand !== null) {
@@ -115,6 +133,12 @@ function handleDecimal(value) {
   if (isResultDisplayed) {
     firstOperand = null;
     isResultDisplayed = false;
+  }
+
+  if (hasPercentagePending) {
+    // Can't add decimal after percentage.
+    setError("PERCENT_ERROR");
+    return;
   }
 
   if (operation == null) {
@@ -149,12 +173,22 @@ function handleDecimal(value) {
 }
 
 function calculateResult() {
+  if (isThereAnError) {
+    clearError();
+  }
+
+  if (firstOperand !== null && hasPercentagePending) {
+    firstOperand = String(parseFloat(firstOperand) / 100);
+    input.textContent = firstOperand;
+    hasPercentagePending = false;
+  }
+
   if (firstOperand !== null && secondOperand !== null) {
     evaluateExpression();
+  }
 
-    if (!isThereAnError) {
-      isResultDisplayed = true;
-    }
+  if (!isThereAnError) {
+    isResultDisplayed = true;
   }
 }
 
@@ -211,6 +245,7 @@ function clearLast() {
 
   if (isThereAnError) {
     clearError();
+    return;
   }
 
   if (isResultDisplayed) {
@@ -238,6 +273,10 @@ function clearLast() {
     operation === null &&
     secondOperand === null
   ) {
+    if (hasPercentagePending) {
+      hasPercentagePending = false;
+    }
+
     firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
     input.textContent = firstOperand;
 
@@ -257,13 +296,26 @@ function clearAll() {
 }
 
 function handlePercent() {
-  // if (typeof x !== "undefined") {
-  //   if (typeof y === "undefined") {
-  //     x = parseInt(x);
-  //     x = x / 100;
-  //     input.textContent = x;
-  //   }
-  // }
+  if (operation === null) {
+    if (firstOperand !== null) {
+      if (firstOperand.includes("%") && hasPercentagePending) {
+        setError("PERCENT_MULTIPLE_ERROR");
+        return;
+      }
+
+      hasPercentagePending = true;
+      firstOperand += "%";
+      input.textContent = firstOperand;
+    } else {
+      setError("PERCENT_ERROR");
+      return;
+    }
+  }
+
+  if (operation !== null) {
+    setError("PERCENT_FIRST_OPERAND_ERROR");
+    return;
+  }
 }
 
 function handleFunction(value) {
