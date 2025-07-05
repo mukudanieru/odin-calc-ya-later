@@ -30,7 +30,13 @@ const errorMessages = {
   SQUARED_MULTIPLE_ERROR: "Error: Multiple squared symbols not allowed.",
   SQUARED_FIRST_OPERAND_ERROR:
     "Error: Squared is only allowed for the first operand.",
+  SQRT_ERROR: "Error: Square root is only allowed before a number.",
+  SQRT_MULTIPLE_ERROR: "Error: Multiple square root symbols not allowed.",
+  SQRT_FIRST_OPERAND_ERROR:
+    "Error: Square root is only allowed for the first operand.",
+  SQRT_MISSING_NUMBER_ERROR: "Error: Square root must contain a number inside.",
 };
+const DECIMAL_PLACES = 4;
 
 let firstOperand = null;
 let symbol = "";
@@ -63,15 +69,22 @@ function debug() {
 }
 
 function processPercentage() {
-  firstOperand = String(parseFloat(firstOperand) / 100);
+  let result = parseFloat(firstOperand) / 100;
+  firstOperand = result.toFixed(DECIMAL_PLACES);
   input.textContent = firstOperand;
   hasPercentagePending = false;
 }
 
-function processSqrt() {}
+function processSqrt() {
+  let result = Math.sqrt(parseFloat(firstOperand.replace("√", "")));
+  firstOperand = result.toFixed(DECIMAL_PLACES);
+  input.textContent = firstOperand;
+  hasSqrtPending = false;
+}
 
 function processSquared() {
-  firstOperand = String(Math.pow(parseFloat(firstOperand), 2));
+  let result = Math.pow(parseFloat(firstOperand), 2);
+  firstOperand = result.toFixed(DECIMAL_PLACES);
   input.textContent = firstOperand;
   hasSquaredPending = false;
 }
@@ -138,6 +151,15 @@ function handleOperator(value, operator) {
 
   if (isThereAnError) {
     clearError();
+  }
+
+  if (firstOperand !== null && hasSqrtPending) {
+    if (firstOperand === "√" || firstOperand === "√.") {
+      setError("SQRT_MISSING_NUMBER_ERROR");
+      return;
+    }
+
+    processSqrt();
   }
 
   if (firstOperand !== null && hasSquaredPending) {
@@ -213,6 +235,15 @@ function calculateResult() {
     clearError();
   }
 
+  if (firstOperand !== null && hasSqrtPending) {
+    if (firstOperand === "√" || firstOperand === "√.") {
+      setError("SQRT_MISSING_NUMBER_ERROR");
+      return;
+    }
+
+    processSqrt();
+  }
+
   if (firstOperand !== null && hasSquaredPending) {
     processSquared();
   }
@@ -234,7 +265,6 @@ function evaluateExpression() {
   /**
    * Evaluates the current expression using firstOperand, operation, and secondOperand.
    */
-  const DECIMAL_PLACES = 4;
   const num1 = parseFloat(firstOperand);
   const num2 = parseFloat(secondOperand);
 
@@ -322,6 +352,10 @@ function clearLast() {
     firstOperand = firstOperand.slice(START_INDEX, LAST_CHAR);
     input.textContent = firstOperand;
 
+    if (hasSqrtPending && firstOperand === "") {
+      hasSqrtPending = false;
+    }
+
     if (firstOperand === "") {
       firstOperand = null;
     }
@@ -364,7 +398,22 @@ function handlePercent() {
 }
 
 function handleSqrt(value) {
-  console.log(value);
+  if (operation !== null) {
+    setError("SQRT_FIRST_OPERAND_ERROR");
+    return;
+  }
+
+  if (hasSqrtPending) {
+    setError("SQRT_MULTIPLE_ERROR");
+    return;
+  } else if (firstOperand !== null) {
+    setError("SQRT_ERROR");
+    return;
+  } else {
+    hasSqrtPending = true;
+    firstOperand = value;
+    input.textContent = firstOperand;
+  }
 }
 
 function handleSquared(value) {
