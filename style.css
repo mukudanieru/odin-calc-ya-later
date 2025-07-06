@@ -51,7 +51,7 @@ a {
   align-items: center;
   justify-content: center;
   width: 100%;
-  border: 1px solid #f5f5dc;
+  /* border: 1px solid #f5f5dc; */
 }
 
 /* Calculator Section */
@@ -75,15 +75,63 @@ a {
 /* History & Input Area */
 #history,
 #input-container {
-  width: 617px;
+  min-width: 617px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.055);
 }
 
 #history {
+  /* border: 2px solid red; */
   background-color: #ebebeb;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  height: 345px;
+  height: 52vh;
+  /* overflow-y: scroll; */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.history-entry {
+  /* border: 2px solid #30bced; */
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;
+  height: 35px;
+  border-bottom: 1px solid #d2d2d2;
+  transition: all 0.2s ease;
+}
+.history-entry:hover {
+  background-color: #d2d2d2;
+}
+
+.history-entry > div {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 16px;
+  cursor: default;
+}
+
+.equation {
+  /* border: 2px solid #303036; */
+  width: 50%;
+  text-align: left;
+}
+
+.equals {
+  /* border: 2px solid #fffaff; */
+  width: 5%;
+  justify-content: center;
+  text-align: center;
+}
+
+.result {
+  /* border: 2px solid #fc5130; */
+  width: 45%;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 #input-container {
