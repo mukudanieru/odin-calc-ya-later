@@ -50,6 +50,8 @@ let hasPercentagePending = false;
 let isThereAnError = false;
 let errorType = null;
 
+let calculationHistory = [];
+
 const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
 
@@ -265,6 +267,8 @@ function evaluateExpression() {
   /**
    * Evaluates the current expression using firstOperand, operation, and secondOperand.
    */
+  saveToHistory();
+
   const num1 = parseFloat(firstOperand);
   const num2 = parseFloat(secondOperand);
 
@@ -439,6 +443,29 @@ function handleSquared(value) {
   }
 }
 
+function saveToHistory() {
+  let calculation = {
+    firstOperand: firstOperand,
+    symbol: symbol,
+    operation: operation,
+    secondOperand: secondOperand,
+    isResultDisplayed: isResultDisplayed,
+    hasSqrtPending: hasSqrtPending,
+    hasSquaredPending: hasPercentagePending,
+    hasPercentagePending: hasPercentagePending,
+  };
+
+  calculationHistory.push(calculation);
+}
+
+function addToHistoryDOM(calculation, idx) {}
+
+function handleHistoryClick() {}
+
+function restoreFromHistory() {}
+
+function setResultAsFirstOperand() {}
+
 // MAIN
 document.addEventListener("DOMContentLoaded", () => {
   const buttonContainer = document.querySelector("#button-container");
@@ -457,7 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
         handleDigit(value);
         break;
       case "operator":
-        handleOperator(value, target.textContent);
+        handleOperator(value, target.textContent.trim());
         break;
       case "decimal":
         handleDecimal(value);
