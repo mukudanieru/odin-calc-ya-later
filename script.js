@@ -236,7 +236,7 @@ function calculateResult() {
   }
 
   if (firstOperand !== null && hasSqrtPending) {
-    if (firstOperand === "√" || firstOperand === "√.") {
+    if (!/\d/.test(firstOperand) || firstOperand[0] !== "√") {
       setError("SQRT_MISSING_NUMBER_ERROR");
       return;
     }
