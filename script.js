@@ -84,10 +84,9 @@ function debug() {
 function processPercentage() {
   let calculation = {
     firstOperand: firstOperand,
-    symbol: "",
-    operation: "",
-    secondOperand: "",
-    isResultDisplayed: isResultDisplayed,
+    symbol: symbol,
+    operation: operation,
+    secondOperand: secondOperand,
     hasSqrtPending: hasSqrtPending,
     hasSquaredPending: hasPercentagePending,
     hasPercentagePending: hasPercentagePending,
@@ -104,10 +103,9 @@ function processPercentage() {
 function processSqrt() {
   let calculation = {
     firstOperand: firstOperand,
-    symbol: "",
-    operation: "",
-    secondOperand: "",
-    isResultDisplayed: isResultDisplayed,
+    symbol: symbol,
+    operation: operation,
+    secondOperand: secondOperand,
     hasSqrtPending: hasSqrtPending,
     hasSquaredPending: hasPercentagePending,
     hasPercentagePending: hasPercentagePending,
@@ -124,10 +122,9 @@ function processSqrt() {
 function processSquared() {
   let calculation = {
     firstOperand: firstOperand,
-    symbol: "",
-    operation: "",
-    secondOperand: "",
-    isResultDisplayed: isResultDisplayed,
+    symbol: symbol,
+    operation: operation,
+    secondOperand: secondOperand,
     hasSqrtPending: hasSqrtPending,
     hasSquaredPending: hasPercentagePending,
     hasPercentagePending: hasPercentagePending,
@@ -322,7 +319,6 @@ function evaluateExpression() {
     symbol: symbol,
     operation: operation,
     secondOperand: secondOperand,
-    isResultDisplayed: isResultDisplayed,
     hasSqrtPending: hasSqrtPending,
     hasSquaredPending: hasPercentagePending,
     hasPercentagePending: hasPercentagePending,
@@ -505,7 +501,7 @@ function handleSquared(value) {
 
 function saveToHistory(calculation, value) {
   calculation["result"] = value;
-  let idx = calculationHistory.push(calculation);
+  let idx = calculationHistory.push(calculation) - 1;
 
   addToHistoryDOM(calculation, idx);
 }
@@ -514,15 +510,24 @@ function addToHistoryDOM(calculation, idx) {
   const historyTab = document.querySelector("#history");
 
   const historyEntry = document.createElement("div");
-  historyEntry.setAttribute("data-entry-id", idx);
   historyEntry.className = "history-entry";
 
   const equation = document.createElement("div");
   equation.className = "equation";
-  equation.textContent =
-    calculation["firstOperand"] +
-    calculation["symbol"] +
-    calculation["secondOperand"];
+
+  if (
+    calculation["operation"] === null &&
+    calculation["secondOperand"] === null
+  ) {
+    equation.textContent = calculation["firstOperand"];
+  } else {
+    equation.textContent =
+      calculation["firstOperand"] +
+      calculation["symbol"] +
+      calculation["secondOperand"];
+  }
+
+  equation.setAttribute("data-entry-id", idx);
 
   const equals = document.createElement("div");
   equals.className = "equals";
@@ -539,15 +544,50 @@ function addToHistoryDOM(calculation, idx) {
   historyTab.appendChild(historyEntry);
 }
 
-function handleHistoryClick() {}
+function restoreFromHistory(idx) {
+  const calculation = calculationHistory[idx];
 
-function restoreFromHistory() {}
+  firstOperand = calculation["firstOperand"];
+  symbol = calculation["symbol"];
+  operation = calculation["operation"];
+  secondOperand = calculation["secondOperand"];
+  isResultDisplayed = false;
+  hasSqrtPending = calculation["hasSqrtPending"];
+  hasSquaredPending = calculation["hasSquaredPending"];
+  hasPercentagePending = calculation["hasPercentagePending"];
 
-function setResultAsFirstOperand() {}
+  if (operation === null && secondOperand === null) {
+    input.textContent = firstOperand;
+  } else {
+    input.textContent = firstOperand + symbol + secondOperand;
+  }
+}
+
+function setResultAsFirstOperand(result) {
+  clearAll();
+  firstOperand = result;
+  input.textContent = firstOperand;
+}
 
 // MAIN
 document.addEventListener("DOMContentLoaded", () => {
+  const historyContainer = document.querySelector("#history");
   const buttonContainer = document.querySelector("#button-container");
+
+  historyContainer.addEventListener("click", (event) => {
+    let equation = event.target.classList.contains("equation");
+    let result = event.target.classList.contains("result");
+
+    if (equation) {
+      restoreFromHistory(parseInt(event.target.dataset.entryId));
+    } else if (result) {
+      setResultAsFirstOperand(event.target.textContent);
+    } else {
+      return;
+    }
+
+    debug();
+  });
 
   buttonContainer.addEventListener("click", (event) => {
     let target = event.target.closest("button");
