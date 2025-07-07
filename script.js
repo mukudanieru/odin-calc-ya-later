@@ -52,6 +52,17 @@ let errorType = null;
 
 let calculationHistory = [];
 
+let calculation = {
+  firstOperand: firstOperand,
+  symbol: symbol,
+  operation: operation,
+  secondOperand: secondOperand,
+  isResultDisplayed: isResultDisplayed,
+  hasSqrtPending: hasSqrtPending,
+  hasSquaredPending: hasPercentagePending,
+  hasPercentagePending: hasPercentagePending,
+};
+
 const inputContainer = document.querySelector("#input-container");
 const [input, warning] = inputContainer.querySelectorAll("div");
 
@@ -71,24 +82,63 @@ function debug() {
 }
 
 function processPercentage() {
+  let calculation = {
+    firstOperand: firstOperand,
+    symbol: "",
+    operation: "",
+    secondOperand: "",
+    isResultDisplayed: isResultDisplayed,
+    hasSqrtPending: hasSqrtPending,
+    hasSquaredPending: hasPercentagePending,
+    hasPercentagePending: hasPercentagePending,
+  };
+
   let result = parseFloat(firstOperand) / 100;
   firstOperand = result.toFixed(DECIMAL_PLACES);
   input.textContent = firstOperand;
   hasPercentagePending = false;
+
+  saveToHistory(calculation, firstOperand);
 }
 
 function processSqrt() {
+  let calculation = {
+    firstOperand: firstOperand,
+    symbol: "",
+    operation: "",
+    secondOperand: "",
+    isResultDisplayed: isResultDisplayed,
+    hasSqrtPending: hasSqrtPending,
+    hasSquaredPending: hasPercentagePending,
+    hasPercentagePending: hasPercentagePending,
+  };
+
   let result = Math.sqrt(parseFloat(firstOperand.replace("√", "")));
   firstOperand = result.toFixed(DECIMAL_PLACES);
   input.textContent = firstOperand;
   hasSqrtPending = false;
+
+  saveToHistory(calculation, firstOperand);
 }
 
 function processSquared() {
+  let calculation = {
+    firstOperand: firstOperand,
+    symbol: "",
+    operation: "",
+    secondOperand: "",
+    isResultDisplayed: isResultDisplayed,
+    hasSqrtPending: hasSqrtPending,
+    hasSquaredPending: hasPercentagePending,
+    hasPercentagePending: hasPercentagePending,
+  };
+
   let result = Math.pow(parseFloat(firstOperand), 2);
   firstOperand = result.toFixed(DECIMAL_PLACES);
   input.textContent = firstOperand;
   hasSquaredPending = false;
+
+  saveToHistory(calculation, firstOperand);
 }
 
 function setError(type) {
@@ -267,7 +317,16 @@ function evaluateExpression() {
   /**
    * Evaluates the current expression using firstOperand, operation, and secondOperand.
    */
-  saveToHistory();
+  let calculation = {
+    firstOperand: firstOperand,
+    symbol: symbol,
+    operation: operation,
+    secondOperand: secondOperand,
+    isResultDisplayed: isResultDisplayed,
+    hasSqrtPending: hasSqrtPending,
+    hasSquaredPending: hasPercentagePending,
+    hasPercentagePending: hasPercentagePending,
+  };
 
   const num1 = parseFloat(firstOperand);
   const num2 = parseFloat(secondOperand);
@@ -283,6 +342,7 @@ function evaluateExpression() {
     ? String(rawResult)
     : rawResult.toFixed(DECIMAL_PLACES);
 
+  saveToHistory(calculation, result);
   input.textContent = result;
   firstOperand = result;
   symbol = "";
@@ -443,22 +503,41 @@ function handleSquared(value) {
   }
 }
 
-function saveToHistory() {
-  let calculation = {
-    firstOperand: firstOperand,
-    symbol: symbol,
-    operation: operation,
-    secondOperand: secondOperand,
-    isResultDisplayed: isResultDisplayed,
-    hasSqrtPending: hasSqrtPending,
-    hasSquaredPending: hasPercentagePending,
-    hasPercentagePending: hasPercentagePending,
-  };
+function saveToHistory(calculation, value) {
+  calculation["result"] = value;
+  let idx = calculationHistory.push(calculation);
 
-  calculationHistory.push(calculation);
+  addToHistoryDOM(calculation, idx);
 }
 
-function addToHistoryDOM(calculation, idx) {}
+function addToHistoryDOM(calculation, idx) {
+  const historyTab = document.querySelector("#history");
+
+  const historyEntry = document.createElement("div");
+  historyEntry.setAttribute("data-entry-id", idx);
+  historyEntry.className = "history-entry";
+
+  const equation = document.createElement("div");
+  equation.className = "equation";
+  equation.textContent =
+    calculation["firstOperand"] +
+    calculation["symbol"] +
+    calculation["secondOperand"];
+
+  const equals = document.createElement("div");
+  equals.className = "equals";
+  equals.textContent = "=";
+
+  const result = document.createElement("div");
+  result.className = "result";
+  result.textContent = calculation["result"];
+
+  historyEntry.appendChild(equation);
+  historyEntry.appendChild(equals);
+  historyEntry.appendChild(result);
+
+  historyTab.appendChild(historyEntry);
+}
 
 function handleHistoryClick() {}
 
